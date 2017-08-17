@@ -47,12 +47,12 @@
 
 #include <qtcore_smoke.h>
 #include <qtgui_smoke.h>
-#include <qtxml_smoke.h>
+//#include <qtxml_smoke.h>
 #include <qtsql_smoke.h>
 #include <qtopengl_smoke.h>
 #include <qtnetwork_smoke.h>
-#include <qtsvg_smoke.h>
-#include <qtdbus_smoke.h>
+//#include <qtsvg_smoke.h>
+//#include <qtdbus_smoke.h>
 
 #include <ruby.h>
 
@@ -2123,10 +2123,10 @@ getClassList(VALUE /*self*/)
             rb_ary_push(class_list, rb_str_new2(qtgui_Smoke->classes[i].className));
     }
 
-    for (int i = 1; i <= qtxml_Smoke->numClasses; i++) {
-        if (qtxml_Smoke->classes[i].className && !qtxml_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtxml_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtxml_Smoke->numClasses; i++) {
+//        if (qtxml_Smoke->classes[i].className && !qtxml_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtxml_Smoke->classes[i].className));
+//    }
 
     for (int i = 1; i <= qtsql_Smoke->numClasses; i++) {
         if (qtsql_Smoke->classes[i].className && !qtsql_Smoke->classes[i].external)
@@ -2143,15 +2143,15 @@ getClassList(VALUE /*self*/)
             rb_ary_push(class_list, rb_str_new2(qtnetwork_Smoke->classes[i].className));
     }
 
-    for (int i = 1; i <= qtsvg_Smoke->numClasses; i++) {
-        if (qtsvg_Smoke->classes[i].className && !qtsvg_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtsvg_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtsvg_Smoke->numClasses; i++) {
+//        if (qtsvg_Smoke->classes[i].className && !qtsvg_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtsvg_Smoke->classes[i].className));
+//    }
 
-    for (int i = 1; i <= qtdbus_Smoke->numClasses; i++) {
-        if (qtdbus_Smoke->classes[i].className && !qtdbus_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtdbus_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtdbus_Smoke->numClasses; i++) {
+//        if (qtdbus_Smoke->classes[i].className && !qtdbus_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtdbus_Smoke->classes[i].className));
+//    }
 
     return class_list;
 }
@@ -2357,23 +2357,23 @@ Init_qtruby4()
 {
     init_qtcore_Smoke();
     init_qtgui_Smoke();
-    init_qtxml_Smoke();
+//    init_qtxml_Smoke();
     init_qtsql_Smoke();
     init_qtopengl_Smoke();
     init_qtnetwork_Smoke();
-    init_qtsvg_Smoke();
-    init_qtdbus_Smoke();
+//    init_qtsvg_Smoke();
+//    init_qtdbus_Smoke();
 
     install_handlers(Qt_handlers);
 
     INIT_BINDING(qtcore)
     INIT_BINDING(qtgui)
-    INIT_BINDING(qtxml)
+//    INIT_BINDING(qtxml)
     INIT_BINDING(qtsql)
     INIT_BINDING(qtopengl)
     INIT_BINDING(qtnetwork)
-    INIT_BINDING(qtsvg)
-    INIT_BINDING(qtdbus)
+//    INIT_BINDING(qtsvg)
+//    INIT_BINDING(qtdbus)
 
 	if (qt_module == Qnil) {
 		qt_module = rb_define_module("Qt");
