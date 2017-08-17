@@ -1,5 +1,6 @@
 
 add_subdirectory( lib )
+find_package(Qt5 COMPONENTS Network DBus Widgets PrintSupport REQUIRED)
 
 IF(QT_QTDBUS_FOUND)
     ADD_DEFINITIONS (-DQT_QTDBUS)
@@ -13,9 +14,12 @@ if(RUBY_VERSION)
     ADD_DEFINITIONS (-DRUBY_VERSION=0x${RUBY_VERSION_NUMBER})
 ENDIF(RUBY_VERSION)
 
-include_directories( ${SMOKE_INCLUDE_DIR} ${RUBY_INCLUDE_DIRS} )
-INCLUDE_DIRECTORIES (${QT_INCLUDES})
 
+list(GET Qt5Core_INCLUDE_DIRS 0 QT5_CORE_INCLUDE_BASE)
+set(QMetaObjectBuilder_INCLUDE "${QT5_CORE_INCLUDE_BASE}/QtCore/${Qt5Core_VERSION}/QtCore")
+
+include_directories( ${SMOKE_INCLUDE_DIR} ${RUBY_INCLUDE_DIRS} ${QMetaObjectBuilder_INCLUDE} )
+INCLUDE_DIRECTORIES (${QT_INCLUDES})
 
 set(qtrubyshared_LIB_SRCS 
    Qt.cpp 
@@ -27,14 +31,16 @@ set(qtruby_LIB_SRCS qtruby.cpp)
 
 # Use 'MODULE' instead of 'SHARED' so that qtruby will be built as a bundle on Mac OS X
 # instead of a dyld. But is this correct (rjd)? It needs testing.
-add_library(qtruby4shared SHARED ${qtrubyshared_LIB_SRCS})
-add_library(qtruby4 MODULE ${qtruby_LIB_SRCS})
+add_library(qtruby5shared SHARED ${qtrubyshared_LIB_SRCS})
+add_library(qtruby5 MODULE ${qtruby_LIB_SRCS})
 
-target_link_libraries(  qtruby4shared 
-                            ${QT_QTCORE_LIBRARY} 
-                            ${QT_QTGUI_LIBRARY} 
+target_link_libraries(  qtruby5shared 
+                            Qt5::Core
+                            Qt5::Gui
+                            Qt5::Network
+                            Qt5::Widgets
+                            Qt5::PrintSupport
                             ${RUBY_LIBRARY} 
-                            ${QT_QTNETWORK_LIBRARY}
                             ${SMOKE_BASE_LIBRARY}
                             ${SMOKE_QTCORE_LIBRARY} 
                             ${SMOKE_QTGUI_LIBRARY} 
@@ -45,12 +51,13 @@ target_link_libraries(  qtruby4shared
                             ${SMOKE_QTDBUS_LIBRARY} 
                             ${SMOKE_QTSVG_LIBRARY} )
 
-target_link_libraries(  qtruby4 
-                            ${QT_QTCORE_LIBRARY} 
-                            ${QT_QTGUI_LIBRARY} 
-                            ${QT_QTDBUS_LIBRARY} 
+target_link_libraries(  qtruby5 
+                            Qt5::Core
+                            Qt5::Gui
+                            Qt5::Network
+                            Qt5::DBus
+                            Qt5::Widgets
                             ${RUBY_LIBRARY} 
-                            ${QT_QTNETWORK_LIBRARY} 
                             ${SMOKE_QTCORE_LIBRARY} 
                             ${SMOKE_QTGUI_LIBRARY} 
                             ${SMOKE_QTXML_LIBRARY} 
@@ -59,19 +66,17 @@ target_link_libraries(  qtruby4
                             ${SMOKE_QTNETWORK_LIBRARY} 
                             ${SMOKE_QTDBUS_LIBRARY} 
                             ${SMOKE_QTSVG_LIBRARY}
-                            qtruby4shared )
+                            qtruby5shared )
 
-# target_link_libraries(qtrubyinternal ${QT_QTCORE_LIBRARY} ${RUBY_LIBRARY} ${QT_QTNETWORK_LIBRARY})
+set_target_properties(qtruby5 PROPERTIES PREFIX "")
+set_target_properties(qtruby5shared PROPERTIES VERSION 3.0.0 SOVERSION 3)
 
-set_target_properties(qtruby4 PROPERTIES PREFIX "")
-set_target_properties(qtruby4shared PROPERTIES VERSION 2.0.0 SOVERSION 2)
-
-install(TARGETS qtruby4shared EXPORT QtRuby4Export DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX} )
-install(TARGETS qtruby4 DESTINATION ${CUSTOM_RUBY_SITE_ARCH_DIR})
-install(EXPORT QtRuby4Export DESTINATION ${CMAKE_INSTALL_PREFIX}/share/qtruby4/cmake NAMESPACE QTRUBY4_ )
+install(TARGETS qtruby5shared EXPORT QtRuby5Export DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX} )
+install(TARGETS qtruby5 DESTINATION ${CUSTOM_RUBY_SITE_ARCH_DIR})
+install(EXPORT QtRuby5Export DESTINATION ${CMAKE_INSTALL_PREFIX}/share/qtruby5/cmake NAMESPACE QTRUBY5_ )
 
 install(FILES qtruby.h marshall.h marshall_basetypes.h marshall_complex.h marshall_macros.h marshall_primitives.h marshall_types.h smokeruby.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/qtruby)
 
 if (Q_WS_MAC)
-    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink \"${CUSTOM_RUBY_SITE_ARCH_DIR}/qtruby4.so\"  \"${CUSTOM_RUBY_SITE_ARCH_DIR}/qtruby4.bundle\" )" )
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink \"${CUSTOM_RUBY_SITE_ARCH_DIR}/qtruby5.so\"  \"${CUSTOM_RUBY_SITE_ARCH_DIR}/qtruby5.bundle\" )" )
 endif (Q_WS_MAC)

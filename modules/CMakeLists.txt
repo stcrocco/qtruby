@@ -8,7 +8,10 @@ macro_optional_add_bindings(QT_QTTEST_FOUND "QtTest" qttest)
 
 macro_optional_add_bindings(PHONON_FOUND "Phonon" phonon)
 
-macro_optional_add_bindings(QSCINTILLA_FOUND "QScintilla" qscintilla)
+if(QSCINTILLA_FOUND AND QSCI_FOUND)
+  set(BUILD_QSCINTILLA 1)
+endif(QSCINTILLA_FOUND AND QSCI_FOUND)
+macro_optional_add_bindings(BUILD_QSCINTILLA "QScintilla" qscintilla)
 
 macro_optional_add_bindings(Qwt5_Qt4_FOUND "Qwt" qwt)
 
