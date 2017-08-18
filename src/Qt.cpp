@@ -909,7 +909,7 @@ static QByteArray * name = 0;
 							// and call the slot directly
 							for (int id = meta->methodOffset(); id < meta->methodCount(); id++) {
 								if (meta->method(id).methodType() == QMetaMethod::Slot) {
-									QByteArray signature(meta->method(id).signature());
+									QByteArray signature(meta->method(id).methodSignature());
 									QByteArray methodName = signature.mid(0, signature.indexOf('('));
 
 									// Don't check that the types of the ruby args match the c++ ones for now,
