@@ -7,61 +7,59 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtCore/qdir.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qlinkedlist.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpair.h>
-#include <QtCore/qprocess.h>
-#include <QtCore/qregexp.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qtextcodec.h>
-#include <QtCore/qurl.h>
-#include <QtGui/qabstractbutton.h>
-#include <QtGui/qaction.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qdockwidget.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qlistwidget.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qpolygon.h>
-#include <QtGui/qtabbar.h>
-#include <QtGui/qtablewidget.h>
-#include <QtGui/qtextedit.h>
-#include <QtGui/qtextlayout.h>
-#include <QtGui/qtextobject.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qtreewidget.h>
-#include <QtGui/qwidget.h>
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qnetworkinterface.h>
-#include <QtNetwork/qurlinfo.h>
-
+#include <QDir>
+#include <QHash>
+#include <QLinkedList>
+#include <QMetaObject>
+#include <QObject>
+#include <QPair>
+#include <QProcess>
+#include <QRegExp>
+#include <QString>
+#include <QTextCodec>
+#include <QUrl>
+#include <QAbstractButton>
+#include <QAction>
+#include <QApplication>
+#include <QDockWidget>
+#include <QEvent>
+#include <QLayout>
+#include <QListWidget>
+#include <QPainter>
+#include <QPalette>
+#include <QPixmap>
+#include <QPolygon>
+#include <QTabBar>
+#include <QTableWidget>
+#include <QTextEdit>
+#include <QTextLayout>
+#include <QTextObject>
+#include <QToolBar>
+#include <QTreeWidget>
+#include <QWidget>
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 #if QT_VERSION >= 0x40200
-#include <QtGui/qgraphicsitem.h>
-#include <QtGui/qgraphicslayout.h>
-#include <QtGui/qgraphicsscene.h>
-#include <QtGui/qgraphicswidget.h>
-#include <QtGui/qstandarditemmodel.h>
-#include <QtGui/qundostack.h>
+#include <QGraphicsItem>
+#include <QGraphicsLayout>
+#include <QGraphicsScene>
+#include <QGraphicsWidget>
+#include <QStandardItemModel>
+#include <QUndoStack>
 #endif
 
 #if QT_VERSION >= 0x40300
-#include <QtGui/qmdisubwindow.h>
-#include <QtNetwork/qsslcertificate.h>
-#include <QtNetwork/qsslcipher.h>
-#include <QtNetwork/qsslerror.h>
-#include <QtXml/qxmlstream.h>
+#include <QMdiSubWindow>
+#include <QSslCertificate>
+#include <QSslCipher>
+#include <QSslError>
+//#include <QXmlStream>
 #endif
 
 #if QT_VERSION >= 0x040400
-#include <QtGui/qprinterinfo.h>
-#include <QtNetwork/qnetworkcookie.h>
+#include <QPrinterInfo>
+#include <QNetworkCookie>
 #endif
 
 #include <smoke.h>
