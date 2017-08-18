@@ -21,32 +21,32 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qline.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qregexp.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qcursor.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qitemselectionmodel.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qpen.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qpolygon.h>
-#include <QtGui/qtextformat.h>
-#include <QtGui/qwidget.h>
+#include <QAbstractItemModel>
+#include <QtGlobal>
+#include <QHash>
+#include <QLine>
+#include <QMetaObject>
+#include <QObject>
+#include <QRect>
+#include <QRegExp>
+#include <QString>
+#include <QVariant>
+#include <QApplication>
+#include <QBitmap>
+#include <QColor>
+#include <QCursor>
+#include <QFont>
+#include <QIcon>
+#include <QItemSelectionModel>
+#include <QPalette>
+#include <QPen>
+#include <QPixmap>
+#include <QPolygon>
+#include <QTextFormat>
+#include <QWidget>
 
 #ifdef QT_QTDBUS
-#include <QtDBus/qdbusargument.h>
+#include <QDBusArgument>
 #endif
 
 #undef DEBUG
