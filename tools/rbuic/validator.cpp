@@ -43,7 +43,7 @@
 
 #include "validator.h"
 #include "driver.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "uic.h"
 
 #if defined(QT_BEGIN_NAMESPACE)

@@ -42,7 +42,7 @@
 ****************************************************************************/
 
 #include "treewalker.h"
-#include "ui4.h"
+#include "ui5.h"
 
 #if defined(QT_BEGIN_NAMESPACE)
   QT_BEGIN_NAMESPACE

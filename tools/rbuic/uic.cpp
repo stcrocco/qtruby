@@ -42,7 +42,7 @@
 ****************************************************************************/
 
 #include "uic.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "driver.h"
 #include "option.h"
 #include "treewalker.h"

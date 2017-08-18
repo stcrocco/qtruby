@@ -40,7 +40,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#include "ui4.h"
+#include "ui5.h"
 #include <QtXml/QDomDocument>
 
 #if defined(QT_BEGIN_NAMESPACE)

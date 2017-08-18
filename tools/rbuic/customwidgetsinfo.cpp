@@ -43,7 +43,7 @@
 
 #include "customwidgetsinfo.h"
 #include "driver.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "utils.h"
 
 #if defined(QT_BEGIN_NAMESPACE)
