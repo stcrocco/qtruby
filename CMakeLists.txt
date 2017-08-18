@@ -4,8 +4,9 @@ set(COMPILE_RUBY FALSE CACHE INTERNAL "")
 
 find_package(Ruby REQUIRED)
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
-find_package(Smoke COMPONENTS QtCore QtGui QtXml QtOpenGl QtSql QtNetwork QtDbus QtSvg Phonon QSci QtDeclarative QtScript QtWebkit QtUiTools QtTest Qwt)
-include_directories(${SMOKE_INCLUDE_DIR} ${SMOKE_QTCORE_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+find_package(Smoke COMPONENTS QtCore QtGui)
+#find_package(Smoke COMPONENTS QtCore QtGui QtXml QtOpenGl QtSql QtNetwork QtDbus QtSvg Phonon QSci QtDeclarative QtScript QtWebkit QtUiTools QtTest Qwt)
+include_directories(${SMOKE_INCLUDE_DIR} ${SMOKE_QTCORE_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src ${QT_INCLUDES})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SMOKE_CMAKE_MODULE_DIR})
 include(MacroOptionalFindPackage)
@@ -14,8 +15,8 @@ include(MacroLogFeature)
 
 #TODO this gives a false positive message if QSci is not found but QScintilla is
 #found
-macro_optional_find_package(QScintilla)
-macro_log_feature(QSCINTILLA_FOUND "QScintilla2" "QScintilla2 libraries" "http://www.riverbankcomputing.co.uk/software/qscintilla/intro" FALSE "" "Needed to compile QScintilla2 bindings")
+#macro_optional_find_package(QScintilla)
+#macro_log_feature(QSCINTILLA_FOUND "QScintilla2" "QScintilla2 libraries" "http://www.riverbankcomputing.co.uk/software/qscintilla/intro" FALSE "" "Needed to compile QScintilla2 bindings")
 
 #macro_optional_find_package(Qwt5)
 #macro_log_feature(Qwt5_Qt4_FOUND "Qwt5 for Qt4" "Qwt5 libraries for Qt4" "http://qwt.sourceforge.net" FALSE "" "Needed to compile Qwt5 bindings")
