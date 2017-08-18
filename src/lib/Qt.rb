@@ -1,1 +1,1 @@
-require 'qtruby4'
+require 'qtruby5'
