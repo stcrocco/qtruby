@@ -24,11 +24,11 @@
 #ifndef RCC_H
 #define RCC_H
 
-#include <QtCore/QStringList>
-#include <QtCore/QFileInfo>
-#include <QtCore/QLocale>
-#include <QtCore/QHash>
-#include <QtCore/QString>
+#include <QStringList>
+#include <QFileInfo>
+#include <QLocale>
+#include <QHash>
+#include <QString>
 
 #define TAG_RCC "RCC"
 #define TAG_RESOURCE "qresource"
