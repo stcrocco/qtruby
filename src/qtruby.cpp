@@ -38,6 +38,7 @@
 #include <QPolygon>
 #include <QTextFormat>
 #include <QWidget>
+#include <private/qmetaobjectbuilder_p.h>
 
 #ifdef QT_QTDBUS
 #include <QDBusArgument>
@@ -605,7 +606,7 @@ qimage_bits(VALUE self)
   smokeruby_object *o = value_obj_info(self);
   QImage * image = static_cast<QImage *>(o->ptr);
   const uchar * bytes = image->bits();
-  return rb_str_new((const char *) bytes, image->numBytes());
+  return rb_str_new((const char *) bytes, image->byteCount());
 }
 
 static VALUE
@@ -1043,7 +1044,7 @@ qvariant_value(VALUE /*self*/, VALUE variant_value_klass, VALUE variant_value)
 #endif
 	} else if (variant->type() >= QVariant::UserType) {
 		// If the QVariant contains a user type, don't bother to look at the Ruby class argument
-		value_ptr = QMetaType::construct(QMetaType::type(variant->typeName()), (void *) variant->constData());
+		value_ptr = QMetaType::create(QMetaType::type(variant->typeName()), (void *) variant->constData());
 
 		if (qstrcmp(variant->typeName(), "uchar") == 0) {
 			return UINT2NUM(*reinterpret_cast<uchar*>(value_ptr));
@@ -1067,55 +1068,55 @@ qvariant_value(VALUE /*self*/, VALUE variant_value_klass, VALUE variant_value)
 	}
 
 	if (qstrcmp(classname, "Qt::Char") == 0) {
-		QChar v = qVariantValue<QChar>(*variant);
+		QChar v = variant->value<QChar>();
 		value_ptr = (void *) new QChar(v);
 	} else if (qstrcmp(classname, "Qt::Pixmap") == 0) {
-		QPixmap v = qVariantValue<QPixmap>(*variant);
+		QPixmap v = variant->value<QPixmap>();
 		value_ptr = (void *) new QPixmap(v);
 	} else if (qstrcmp(classname, "Qt::Font") == 0) {
-		QFont v = qVariantValue<QFont>(*variant);
+		QFont v = variant->value<QFont>();
 		value_ptr = (void *) new QFont(v);
 	} else if (qstrcmp(classname, "Qt::Brush") == 0) {
-		QBrush v = qVariantValue<QBrush>(*variant);
+		QBrush v = variant->value<QBrush>();
 		value_ptr = (void *) new QBrush(v);
 	} else if (qstrcmp(classname, "Qt::Color") == 0) {
-		QColor v = qVariantValue<QColor>(*variant);
+		QColor v = variant->value<QColor>();
 		value_ptr = (void *) new QColor(v);
 	} else if (qstrcmp(classname, "Qt::Palette") == 0) {
-		QPalette v = qVariantValue<QPalette>(*variant);
+		QPalette v = variant->value<QPalette>();
 		value_ptr = (void *) new QPalette(v);
 	} else if (qstrcmp(classname, "Qt::Icon") == 0) {
-		QIcon v = qVariantValue<QIcon>(*variant);
+		QIcon v = variant->value<QIcon>();
 		value_ptr = (void *) new QIcon(v);
 	} else if (qstrcmp(classname, "Qt::Image") == 0) {
-		QImage v = qVariantValue<QImage>(*variant);
+		QImage v = variant->value<QImage>();
 		value_ptr = (void *) new QImage(v);
 	} else if (qstrcmp(classname, "Qt::Polygon") == 0) {
-		QPolygon v = qVariantValue<QPolygon>(*variant);
+		QPolygon v = variant->value<QPolygon>();
 		value_ptr = (void *) new QPolygon(v);
 	} else if (qstrcmp(classname, "Qt::Region") == 0) {
-		QRegion v = qVariantValue<QRegion>(*variant);
+		QRegion v = variant->value<QRegion>();
 		value_ptr = (void *) new QRegion(v);
 	} else if (qstrcmp(classname, "Qt::Bitmap") == 0) {
-		QBitmap v = qVariantValue<QBitmap>(*variant);
+		QBitmap v = variant->value<QBitmap>();
 		value_ptr = (void *) new QBitmap(v);
 	} else if (qstrcmp(classname, "Qt::Cursor") == 0) {
-		QCursor v = qVariantValue<QCursor>(*variant);
+		QCursor v = variant->value<QCursor>();
 		value_ptr = (void *) new QCursor(v);
 	} else if (qstrcmp(classname, "Qt::SizePolicy") == 0) {
-		QSizePolicy v = qVariantValue<QSizePolicy>(*variant);
+		QSizePolicy v = variant->value<QSizePolicy>();
 		value_ptr = (void *) new QSizePolicy(v);
 	} else if (qstrcmp(classname, "Qt::KeySequence") == 0) {
-		QKeySequence v = qVariantValue<QKeySequence>(*variant);
+		QKeySequence v = variant->value<QKeySequence>();
 		value_ptr = (void *) new QKeySequence(v);
 	} else if (qstrcmp(classname, "Qt::Pen") == 0) {
-		QPen v = qVariantValue<QPen>(*variant);
+		QPen v = variant->value<QPen>();
 		value_ptr = (void *) new QPen(v);
 	} else if (qstrcmp(classname, "Qt::TextLength") == 0) {
-		QTextLength v = qVariantValue<QTextLength>(*variant);
+		QTextLength v = variant->value<QTextLength>();
 		value_ptr = (void *) new QTextLength(v);
 	} else if (qstrcmp(classname, "Qt::TextFormat") == 0) {
-		QTextFormat v = qVariantValue<QTextFormat>(*variant);
+		QTextFormat v = variant->value<QTextFormat>();
 		value_ptr = (void *) new QTextFormat(v);
 	} else if (qstrcmp(classname, "Qt::Variant") == 0) {
 		value_ptr = (void *) new QVariant(*((QVariant *) variant->constData()));
@@ -1378,11 +1379,17 @@ static VALUE
 qapplication_argv(VALUE /*self*/)
 {
 	VALUE result = rb_ary_new();
+  QStringList args = qApp->arguments();
 	// Drop argv[0], as it isn't included in the ruby global ARGV
-	for (int index = 1; index < qApp->argc(); index++) {
-		rb_ary_push(result, rb_str_new2(qApp->argv()[index]));
-	}
-
+  args.removeFirst();
+  Q_FOREACH(const QString &a, args){
+    //TODO Qt5: check whether this works
+    //according to https://wiki.qt.io/Technical_FAQ#How_can_I_convert_a_QString_to_char.2A_and_vice_versa.3F
+    //we can't just write rb_str_new2(a.toLocal8Bit().data()) because the
+    //QByteArray would be immediately destroyed and it's data with it
+    QByteArray temp = a.toLocal8Bit();
+    rb_ary_push(result, rb_str_new2(temp.data()));
+  }
 	return result;
 }
 
@@ -1414,7 +1421,7 @@ qt_signal(int argc, VALUE * argv, VALUE self)
 	const QMetaObject * m = (QMetaObject*) ometa->ptr;
     for (i = m->methodCount() - 1; i > -1; i--) {
 		if (m->method(i).methodType() == QMetaMethod::Signal) {
-			QString name(m->method(i).signature());
+			QString name(m->method(i).methodSignature());
 static QRegExp * rx = 0;
 			if (rx == 0) {
 				rx = new QRegExp("\\(.*");
@@ -1504,7 +1511,7 @@ qt_metacall(int /*argc*/, VALUE * argv, VALUE self)
 
 		QList<MocArgument*> mocArgs = get_moc_arguments(o->smoke, method.typeName(), method.parameterTypes());
 
-		QString name(method.signature());
+		QString name(method.methodSignature());
 static QRegExp * rx = 0;
 		if (rx == 0) {
 			rx = new QRegExp("\\(.*");
@@ -1862,12 +1869,12 @@ make_metaObject(VALUE /*self*/, VALUE obj, VALUE parentMeta, VALUE stringdata_va
 		data[i] = NUM2UINT(rv);
 	}
 
-	QMetaObject ob = {
-		{ superdata, stringdata, data, 0 }
-	} ;
-
-	QMetaObject * meta = new QMetaObject;
-	*meta = ob;
+  QMetaObjectBuilder b;
+  b.setSuperClass(superdata);
+  //TODO IMPORTANT: add data to meta object using the QMetaObjectBuilder API. To see which
+  //data should be added, one must check Internal.getMetaObject and
+  //Internal.makeMetaData in qtruby4.rb
+  QMetaObject *meta = b.toMetaObject();
 
 #ifdef DEBUG
 	printf("make_metaObject() superdata: %p %s\n", meta->d.superdata, superdata->className());
