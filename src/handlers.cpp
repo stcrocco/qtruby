@@ -585,9 +585,6 @@ resolve_classname_qt(smokeruby_object * o)
 		case QEvent::InputMethod:
    			SET_SMOKERUBY_OBJECT("QInputMethodEvent")
 			break;
-		case QEvent::AccessibilityPrepare:
-   			SET_SMOKERUBY_OBJECT("QEvent")
-			break;
 		case QEvent::TabletMove:
 		case QEvent::TabletPress:
 		case QEvent::TabletRelease:
@@ -655,9 +652,6 @@ resolve_classname_qt(smokeruby_object * o)
 		case QEvent::HoverMove:
    			SET_SMOKERUBY_OBJECT("QHoverEvent")
 			break;
-		case QEvent::AccessibilityHelp:
-		case QEvent::AccessibilityDescription:
-   			SET_SMOKERUBY_OBJECT("QEvent")
 #if QT_VERSION >= 0x40200
 		case QEvent::GraphicsSceneMouseMove:
 		case QEvent::GraphicsSceneMousePress:
@@ -2359,7 +2353,6 @@ DEF_LIST_MARSHALLER( QMdiSubWindowList, QList<QMdiSubWindow*>, QMdiSubWindow )
 DEF_VALUELIST_MARSHALLER( QColorVector, QVector<QColor>, QColor )
 DEF_VALUELIST_MARSHALLER( QFileInfoList, QFileInfoList, QFileInfo )
 DEF_VALUELIST_MARSHALLER( QHostAddressList, QList<QHostAddress>, QHostAddress )
-DEF_VALUELIST_MARSHALLER( QImageTextKeyLangList, QList<QImageTextKeyLang>, QImageTextKeyLang )
 DEF_VALUELIST_MARSHALLER( QKeySequenceList, QList<QKeySequence>, QKeySequence )
 DEF_VALUELIST_MARSHALLER( QLineFVector, QVector<QLineF>, QLineF )
 DEF_VALUELIST_MARSHALLER( QLineVector, QVector<QLine>, QLine )
@@ -2388,9 +2381,6 @@ DEF_VALUELIST_MARSHALLER( QVariantVector, QVector<QVariant>, QVariant )
 DEF_VALUELIST_MARSHALLER( QSslCertificateList, QList<QSslCertificate>, QSslCertificate )
 DEF_VALUELIST_MARSHALLER( QSslCipherList, QList<QSslCipher>, QSslCipher )
 DEF_VALUELIST_MARSHALLER( QSslErrorList, QList<QSslError>, QSslError )
-DEF_VALUELIST_MARSHALLER( QXmlStreamEntityDeclarations, QVector<QXmlStreamEntityDeclaration>, QXmlStreamEntityDeclaration )
-DEF_VALUELIST_MARSHALLER( QXmlStreamNamespaceDeclarations, QVector<QXmlStreamNamespaceDeclaration>, QXmlStreamNamespaceDeclaration )
-DEF_VALUELIST_MARSHALLER( QXmlStreamNotationDeclarations, QVector<QXmlStreamNotationDeclaration>, QXmlStreamNotationDeclaration )
 #endif
 
 #if QT_VERSION >= 0x40400
@@ -2440,7 +2430,6 @@ Q_DECL_EXPORT TypeHandler Qt_handlers[] = {
     { "QList<QByteArray>&", marshall_QByteArrayList },
     { "QList<QHostAddress>", marshall_QHostAddressList },
     { "QList<QHostAddress>&", marshall_QHostAddressList },
-    { "QList<QImageTextKeyLang>", marshall_QImageTextKeyLangList },
     { "QList<QKeySequence>", marshall_QKeySequenceList },
     { "QList<QKeySequence>&", marshall_QKeySequenceList },
     { "QList<QListWidgetItem*>", marshall_QListWidgetItemList },
@@ -2573,9 +2562,6 @@ Q_DECL_EXPORT TypeHandler Qt_handlers[] = {
     { "QList<QSslCipher>&", marshall_QSslCipherList },
     { "QList<QSslError>", marshall_QSslErrorList },
     { "QList<QSslError>&", marshall_QSslErrorList },
-    { "QXmlStreamEntityDeclarations", marshall_QXmlStreamEntityDeclarations },
-    { "QXmlStreamNamespaceDeclarations", marshall_QXmlStreamNamespaceDeclarations },
-    { "QXmlStreamNotationDeclarations", marshall_QXmlStreamNotationDeclarations },
 #endif
 #if QT_VERSION >= 0x040400
     { "QList<QNetworkCookie>", marshall_QNetworkCookieList },
