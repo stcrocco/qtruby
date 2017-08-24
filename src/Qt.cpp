@@ -1009,7 +1009,7 @@ static QRegExp * rx = 0;
 		MocArgument *arg = new MocArgument;
 		Smoke::Index typeId = 0;
 
-		if (name.isEmpty()) {
+		if (name.isEmpty() || name == "void") {
 			arg->argType = xmoc_void;
 			result.append(arg);
 		} else {
