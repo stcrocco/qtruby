@@ -1421,14 +1421,14 @@ qt_signal(int argc, VALUE * argv, VALUE self)
 	const QMetaObject * m = (QMetaObject*) ometa->ptr;
     for (i = m->methodCount() - 1; i > -1; i--) {
 		if (m->method(i).methodType() == QMetaMethod::Signal) {
-			QString name(m->method(i).methodSignature());
-static QRegExp * rx = 0;
-			if (rx == 0) {
-				rx = new QRegExp("\\(.*");
-			}
-			name.replace(*rx, "");
+//      QString name(m->method(i).methodSignature());
+//static QRegExp * rx = 0;
+//      if (rx == 0) {
+//        rx = new QRegExp("\\(.*");
+//      }
+//      name.replace(*rx, "");
 
-			if (name == signalname) {
+			if (signalname == m->method(i).name()) {
 				break;
 			}
 		}
@@ -1842,7 +1842,7 @@ parent_meta_object(VALUE obj)
 }
 
 static VALUE
-make_metaObject(VALUE /*self*/, VALUE obj, VALUE parentMeta, VALUE stringdata_value, VALUE data_value)
+make_metaObject(VALUE /*self*/, VALUE obj, VALUE parentMeta, VALUE classInfos, VALUE dbus, VALUE signalsArray, VALUE slotsArray)
 {
 	QMetaObject* superdata = 0;
 
@@ -1857,96 +1857,103 @@ make_metaObject(VALUE /*self*/, VALUE obj, VALUE parentMeta, VALUE stringdata_va
 		superdata = (QMetaObject *) p->ptr;
 	}
 
-	char *stringdata = new char[RSTRING_LEN(stringdata_value)];
-
-	int count = RARRAY_LEN(data_value);
-	uint * data = new uint[count];
-
-	memcpy(	(void *) stringdata, RSTRING_PTR(stringdata_value), RSTRING_LEN(stringdata_value) );
-
-	for (long i = 0; i < count; i++) {
-		VALUE rv = rb_ary_entry(data_value, i);
-		data[i] = NUM2UINT(rv);
-	}
-
   QMetaObjectBuilder b;
   b.setSuperClass(superdata);
-  //TODO IMPORTANT: add data to meta object using the QMetaObjectBuilder API. To see which
-  //data should be added, one must check Internal.getMetaObject and
-  //Internal.makeMetaData in qtruby4.rb
+  
+  //TODO: add dbus (is dbus still needed? I can't find anything
+  //related to it in QMetaObjectBuilder and in QMetaObject)
+  
+  for(int i = 0; i  < RARRAY_LEN(classInfos); ++i){
+    VALUE ci = RARRAY_PTR(classInfos)[i];
+    QByteArray key(StringValueCStr(RARRAY_PTR(ci)[0]));
+    QByteArray value(StringValueCStr(RARRAY_PTR(ci)[1]));
+    b.addClassInfo(key, value);
+  }
+
+  VALUE *signalsArrayPtr = RARRAY_PTR(signalsArray);
+  for(int i = 0; i < RARRAY_LEN(signalsArray); ++i){
+    b.addSignal(StringValueCStr(signalsArrayPtr[i]));
+  }
+
+  VALUE *slotsArrayPtr = RARRAY_PTR(slotsArray);
+  for(int i = 0; i < RARRAY_LEN(slotsArray); ++i){
+    b.addSlot(StringValueCStr(slotsArrayPtr[i]));
+  }
+
   QMetaObject *meta = b.toMetaObject();
 
+//TODO: rewrite debug information
 #ifdef DEBUG
-	printf("make_metaObject() superdata: %p %s\n", meta->d.superdata, superdata->className());
+//  printf("make_metaObject() superdata: %p %s\n", meta->d.superdata, superdata->className());
 
-	printf(
-	" // content:\n"
-	"       %d,       // revision\n"
-	"       %d,       // classname\n"
-	"       %d,   %d, // classinfo\n"
-	"       %d,   %d, // methods\n"
-	"       %d,   %d, // properties\n"
-	"       %d,   %d, // enums/sets\n",
-	data[0], data[1], data[2], data[3],
-	data[4], data[5], data[6], data[7], data[8], data[9]);
+//  printf(
+//  " // content:\n"
+//  "       %d,       // revision\n"
+//  "       %d,       // classname\n"
+//  "       %d,   %d, // classinfo\n"
+//  "       %d,   %d, // methods\n"
+//  "       %d,   %d, // properties\n"
+//  "       %d,   %d, // enums/sets\n",
+//  data[0], data[1], data[2], data[3],
+//  data[4], data[5], data[6], data[7], data[8], data[9]);
 
-	int s = data[3];
+//  int s = data[3];
 
-	if (data[2] > 0) {
-		printf("\n // classinfo: key, value\n");
-		for (uint j = 0; j < data[2]; j++) {
-			printf("      %d,    %d\n", data[s + (j * 2)], data[s + (j * 2) + 1]);
-		}
-	}
+//  if (data[2] > 0) {
+//    printf("\n // classinfo: key, value\n");
+//    for (uint j = 0; j < data[2]; j++) {
+//      printf("      %d,    %d\n", data[s + (j * 2)], data[s + (j * 2) + 1]);
+//    }
+//  }
 
-	s = data[5];
-	bool signal_headings = true;
-	bool slot_headings = true;
+//  s = data[5];
+//  bool signal_headings = true;
+//  bool slot_headings = true;
 
-	for (uint j = 0; j < data[4]; j++) {
-		if (signal_headings && (data[s + (j * 5) + 4] & 0x04) != 0) {
-			printf("\n // signals: signature, parameters, type, tag, flags\n");
-			signal_headings = false;
-		}
+//  for (uint j = 0; j < data[4]; j++) {
+//    if (signal_headings && (data[s + (j * 5) + 4] & 0x04) != 0) {
+//      printf("\n // signals: signature, parameters, type, tag, flags\n");
+//      signal_headings = false;
+//    }
 
-		if (slot_headings && (data[s + (j * 5) + 4] & 0x08) != 0) {
-			printf("\n // slots: signature, parameters, type, tag, flags\n");
-			slot_headings = false;
-		}
+//    if (slot_headings && (data[s + (j * 5) + 4] & 0x08) != 0) {
+//      printf("\n // slots: signature, parameters, type, tag, flags\n");
+//      slot_headings = false;
+//    }
 
-		printf("      %d,   %d,   %d,   %d, 0x%2.2x\n",
-			data[s + (j * 5)], data[s + (j * 5) + 1], data[s + (j * 5) + 2],
-			data[s + (j * 5) + 3], data[s + (j * 5) + 4]);
-	}
+//    printf("      %d,   %d,   %d,   %d, 0x%2.2x\n",
+//      data[s + (j * 5)], data[s + (j * 5) + 1], data[s + (j * 5) + 2],
+//      data[s + (j * 5) + 3], data[s + (j * 5) + 4]);
+//  }
 
-	s += (data[4] * 5);
-	for (uint j = 0; j < data[6]; j++) {
-		printf("\n // properties: name, type, flags\n");
-		printf("      %d,   %d,   0x%8.8x\n",
-			data[s + (j * 3)], data[s + (j * 3) + 1], data[s + (j * 3) + 2]);
-	}
+//  s += (data[4] * 5);
+//  for (uint j = 0; j < data[6]; j++) {
+//    printf("\n // properties: name, type, flags\n");
+//    printf("      %d,   %d,   0x%8.8x\n",
+//      data[s + (j * 3)], data[s + (j * 3) + 1], data[s + (j * 3) + 2]);
+//  }
 
-	s += (data[6] * 3);
-	for (int i = s; i < count; i++) {
-		printf("\n       %d        // eod\n", data[i]);
-	}
+//  s += (data[6] * 3);
+//  for (int i = s; i < count; i++) {
+//    printf("\n       %d        // eod\n", data[i]);
+//  }
 
-	printf("\nqt_meta_stringdata:\n    \"");
+//  printf("\nqt_meta_stringdata:\n    \"");
 
-    int strlength = 0;
-	for (int j = 0; j < RSTRING_LEN(stringdata_value); j++) {
-        strlength++;
-		if (meta->d.stringdata[j] == 0) {
-			printf("\\0");
-			if (strlength > 40) {
-				printf("\"\n    \"");
-				strlength = 0;
-			}
-		} else {
-			printf("%c", meta->d.stringdata[j]);
-		}
-	}
-	printf("\"\n\n");
+//    int strlength = 0;
+//  for (int j = 0; j < RSTRING_LEN(stringdata_value); j++) {
+//        strlength++;
+//    if (meta->d.stringdata[j] == 0) {
+//      printf("\\0");
+//      if (strlength > 40) {
+//        printf("\"\n    \"");
+//        strlength = 0;
+//      }
+//    } else {
+//      printf("%c", meta->d.stringdata[j]);
+//    }
+//  }
+//  printf("\"\n\n");
 
 #endif
 	smokeruby_object  * m = alloc_smokeruby_object(	true,
@@ -2135,20 +2142,20 @@ getClassList(VALUE /*self*/)
 //            rb_ary_push(class_list, rb_str_new2(qtxml_Smoke->classes[i].className));
 //    }
 
-    for (int i = 1; i <= qtsql_Smoke->numClasses; i++) {
-        if (qtsql_Smoke->classes[i].className && !qtsql_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtsql_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtsql_Smoke->numClasses; i++) {
+//        if (qtsql_Smoke->classes[i].className && !qtsql_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtsql_Smoke->classes[i].className));
+//    }
 
-    for (int i = 1; i <= qtopengl_Smoke->numClasses; i++) {
-        if (qtopengl_Smoke->classes[i].className && !qtopengl_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtopengl_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtopengl_Smoke->numClasses; i++) {
+//        if (qtopengl_Smoke->classes[i].className && !qtopengl_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtopengl_Smoke->classes[i].className));
+//    }
 
-    for (int i = 1; i <= qtnetwork_Smoke->numClasses; i++) {
-        if (qtnetwork_Smoke->classes[i].className && !qtnetwork_Smoke->classes[i].external)
-            rb_ary_push(class_list, rb_str_new2(qtnetwork_Smoke->classes[i].className));
-    }
+//    for (int i = 1; i <= qtnetwork_Smoke->numClasses; i++) {
+//        if (qtnetwork_Smoke->classes[i].className && !qtnetwork_Smoke->classes[i].external)
+//            rb_ary_push(class_list, rb_str_new2(qtnetwork_Smoke->classes[i].className));
+//    }
 
 //    for (int i = 1; i <= qtsvg_Smoke->numClasses; i++) {
 //        if (qtsvg_Smoke->classes[i].className && !qtsvg_Smoke->classes[i].external)
@@ -2360,14 +2367,14 @@ set_qtruby_embedded_wrapped(VALUE /*self*/, VALUE yn)
 	smokeList << module##_Smoke;
 
 extern Q_DECL_EXPORT void
-Init_qtruby4()
+Init_qtruby5()
 {
     init_qtcore_Smoke();
     init_qtgui_Smoke();
 //    init_qtxml_Smoke();
-    init_qtsql_Smoke();
-    init_qtopengl_Smoke();
-    init_qtnetwork_Smoke();
+//    init_qtsql_Smoke();
+//    init_qtopengl_Smoke();
+//    init_qtnetwork_Smoke();
 //    init_qtsvg_Smoke();
 //    init_qtdbus_Smoke();
 
@@ -2376,9 +2383,9 @@ Init_qtruby4()
     INIT_BINDING(qtcore)
     INIT_BINDING(qtgui)
 //    INIT_BINDING(qtxml)
-    INIT_BINDING(qtsql)
-    INIT_BINDING(qtopengl)
-    INIT_BINDING(qtnetwork)
+//    INIT_BINDING(qtsql)
+//    INIT_BINDING(qtopengl)
+//    INIT_BINDING(qtnetwork)
 //    INIT_BINDING(qtsvg)
 //    INIT_BINDING(qtdbus)
 
@@ -2423,7 +2430,7 @@ Init_qtruby4()
     rb_define_module_function(qt_internal_module, "find_pclassid", (VALUE (*) (...)) find_pclassid, 1);
     rb_define_module_function(qt_internal_module, "get_value_type", (VALUE (*) (...)) get_value_type, 1);
 
-    rb_define_module_function(qt_internal_module, "make_metaObject", (VALUE (*) (...)) make_metaObject, 4);
+    rb_define_module_function(qt_internal_module, "make_metaObject", (VALUE (*) (...)) make_metaObject, 6);
     rb_define_module_function(qt_internal_module, "addMetaObjectMethods", (VALUE (*) (...)) add_metaobject_methods, 1);
     rb_define_module_function(qt_internal_module, "addSignalMethods", (VALUE (*) (...)) add_signal_methods, 2);
     rb_define_module_function(qt_internal_module, "mapObject", (VALUE (*) (...)) mapObject, 1);
@@ -2484,7 +2491,7 @@ Init_qtruby4()
     rb_intern("itemAt");
     rb_intern("internalPointer");
 
-	rb_require("Qt/qtruby4.rb");
+	rb_require("Qt/qtruby5.rb");
 
 	rObject_typeId = QMetaType::registerType("rObject", &delete_ruby_object, &create_ruby_object);
 

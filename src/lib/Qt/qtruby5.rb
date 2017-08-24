@@ -114,7 +114,11 @@ module Qt
 			return Qt::*(self, a)
 		end
 		def /(a)
-			return Qt::/(self, a)
+      #the '#/' at the end is only there to fix syntax highlighting in vim.
+      #Unfortunately, vim interprets ::/ as a regexp and highglights everything
+      #until the next / as such. Putting a fake comment with a / at the end of
+      #the line, restricts this behaviour to this line only
+			return Qt::/(self, a) #/
 		end
 		def %(a)
 			return Qt::%(self, a)
@@ -1408,11 +1412,11 @@ module Qt
 
 	class MetaObject < Qt::Base
 		def method(*args)
-            if args.length == 1 && args[0].kind_of?(Symbol)
+      if args.length == 1 && args[0].kind_of?(Symbol)
 				super(*args)
 			else
 				method_missing(:method, *args)
-			end
+      end
 		end
 
 		# Add three methods, 'propertyNames()', 'slotNames()' and 'signalNames()'
@@ -2504,9 +2508,7 @@ module Qt
 					return ret
 				end
 			end
-			if classname =~ /^Q3/
-				ruby_classname = classname.sub(/^Q3(?=[A-Z])/,'Qt3::')
-			elsif classname =~ /^Q/
+			if classname =~ /^Q/
 				ruby_classname = classname.sub(/^Q(?=[A-Z])/,'Qt::')
 			else
 				ruby_classname = classname
@@ -2643,7 +2645,7 @@ module Qt
 			end
 		end
 		
-        # If a block was passed to the constructor, then
+    # If a block was passed to the constructor, then
 		# run that now. Either run the context of the new instance
 		# if no args were passed to the block. Or otherwise,
 		# run the block in the context of the arg.
@@ -2673,7 +2675,7 @@ module Qt
 			
 			if method == "new"
 				method = classname.dup 
-				method.gsub!(/^.*::/,"")
+        method.gsub!(/^.*::/,"")
 			end
 			method = "operator" + method.sub("@","") if method !~ /[a-zA-Z]+/
 			# Change foobar= to setFoobar()					
@@ -2819,6 +2821,7 @@ module Qt
 			end
 		end
 	
+=begin old
 		# Keeps a hash of strings against their corresponding offsets
 		# within the qt_meta_stringdata sequence of null terminated
 		# strings. Returns a proc to get an offset given a string.
@@ -2891,7 +2894,8 @@ module Qt
 
 			return [stringdata.pack(pack_string), data]
 		end
-		
+=end
+
 		def Internal.getMetaObject(klass, qobject)
 			if klass.nil?
 				klass = qobject.class
@@ -2906,14 +2910,14 @@ module Qt
 			if meta.nil?
 				meta = Qt::MetaInfo.new(klass) 
 			end
-
 			if meta.metaobject.nil? or meta.changed
-				stringdata, data = makeMetaData(	qobject.class.name,
-													meta.classinfos,  
-													meta.dbus,
-													meta.signals, 
-													meta.slots )
-				meta.metaobject = make_metaObject(qobject, parentMeta, stringdata, data)
+        #TODO: find out what should go here
+        classinfos_data = meta.classinfos
+        dbus_data = meta.dbus
+        signals_data = meta.signals.map(&:full_name)
+        slots_data = meta.slots.map(&:full_name)
+				meta.metaobject = make_metaObject qobject, parentMeta, classinfos_data,
+          dbus_data, signals_data, slots_data
 				meta.changed = false
 			end
 			
