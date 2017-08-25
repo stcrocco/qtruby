@@ -44,6 +44,7 @@ target_link_libraries(  qtruby5shared
                             ${SMOKE_BASE_LIBRARY}
                             ${SMOKE_QTCORE_LIBRARY} 
                             ${SMOKE_QTGUI_LIBRARY} 
+                            ${SMOKE_QTWIDGETS_LIBRARY}
                             ${SMOKE_QTXML_LIBRARY} 
                             ${SMOKE_QTOPENGL_LIBRARY} 
                             ${SMOKE_QTSQL_LIBRARY} 
@@ -60,6 +61,7 @@ target_link_libraries(  qtruby5
                             ${RUBY_LIBRARY} 
                             ${SMOKE_QTCORE_LIBRARY} 
                             ${SMOKE_QTGUI_LIBRARY} 
+                            ${SMOKE_QTWIDGETS_LIBRARY}
                             ${SMOKE_QTXML_LIBRARY} 
                             ${SMOKE_QTOPENGL_LIBRARY} 
                             ${SMOKE_QTSQL_LIBRARY} 
