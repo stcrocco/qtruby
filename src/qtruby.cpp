@@ -38,6 +38,7 @@
 #include <QPolygon>
 #include <QTextFormat>
 #include <QWidget>
+#include <QScreen>
 #include <private/qmetaobjectbuilder_p.h>
 
 #ifdef QT_QTDBUS
@@ -2502,6 +2503,7 @@ Init_qtruby5()
 	rb_require("Qt/qtruby5.rb");
 
 	rObject_typeId = QMetaType::registerType("rObject", &delete_ruby_object, &create_ruby_object);
+  qRegisterMetaType<QScreen*>("QScreen*");
 
     // Do package initialization
     rb_funcall(qt_internal_module, rb_intern("init_all_classes"), 0);
