@@ -728,7 +728,9 @@ resolve_classname_qt(smokeruby_object * o)
 		}
 	}
 	
-	return qtruby_modules[o->smoke].binding->className(o->classId);
+  //The parentheses around qtruby_modules[o->smoke] is only to make vim's
+  //syntax highlighter happy
+	return (qtruby_modules[o->smoke]).binding->className(o->classId);
 
 #undef SET_SMOKERUBY_OBJECT
 }
@@ -942,58 +944,6 @@ static void marshall_doubleR(Marshall *m) {
 
 static QTextCodec *codec = 0;
 
-#if RUBY_VERSION < 0x10900
-static const char * KCODE = 0;
-
-static void 
-init_codec() {
-	VALUE temp = rb_gv_get("$KCODE");
-	KCODE = StringValuePtr(temp);
-	if (qstrcmp(KCODE, "EUC") == 0) {
-		codec = QTextCodec::codecForName("eucJP");
-	} else if (qstrcmp(KCODE, "SJIS") == 0) {
-		codec = QTextCodec::codecForName("Shift-JIS");
-	}
-}
-
-QString* 
-qstringFromRString(VALUE rstring) {
-	if (KCODE == 0) {
-		init_codec();
-	}
-	
-	if (qstrcmp(KCODE, "UTF8") == 0)
-		return new QString(QString::fromUtf8(StringValuePtr(rstring), RSTRING_LEN(rstring)));
-	else if (qstrcmp(KCODE, "EUC") == 0)
-		return new QString(codec->toUnicode(StringValuePtr(rstring)));
-	else if (qstrcmp(KCODE, "SJIS") == 0)
-		return new QString(codec->toUnicode(StringValuePtr(rstring)));
-	else if(qstrcmp(KCODE, "NONE") == 0)
-		return new QString(QString::fromLatin1(StringValuePtr(rstring)));
-
-	return new QString(QString::fromLocal8Bit(StringValuePtr(rstring), RSTRING_LEN(rstring)));
-}
-
-VALUE 
-rstringFromQString(QString * s) {
-	if (KCODE == 0) {
-		init_codec();
-	}
-	
-	if (qstrcmp(KCODE, "UTF8") == 0)
-		return rb_str_new2(s->toUtf8());
-	else if (qstrcmp(KCODE, "EUC") == 0)
-		return rb_str_new2(codec->fromUnicode(*s));
-	else if (qstrcmp(KCODE, "SJIS") == 0)
-		return rb_str_new2(codec->fromUnicode(*s));
-	else if (qstrcmp(KCODE, "NONE") == 0)
-		return rb_str_new2(s->toLatin1());
-	else
-		return rb_str_new2(s->toLocal8Bit());
-}
-
-#else
-
 QString* 
 qstringFromRString(VALUE rstring) {
 	VALUE encoding = rb_funcall(rstring, rb_intern("encoding"), 0);
@@ -1019,7 +969,6 @@ VALUE
 rstringFromQString(QString * s) {
 	return rb_str_new2(s->toUtf8());
 }
-#endif
 
 QByteArray*
 qbytearrayFromRString(VALUE rstring) {
