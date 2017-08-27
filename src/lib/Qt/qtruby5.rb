@@ -474,10 +474,6 @@ module Qt
 			self.dispose
 			Qt::Internal.application_terminated = true
 		end
-
-		def type(*args)
-			method_missing(:type, *args)
-		end
   end
 
 	class Application < Qt::Base
@@ -496,10 +492,6 @@ module Qt
 			method_missing(:exec)
 			self.dispose
 			Qt::Internal.application_terminated = true
-		end
-
-		def type(*args)
-			method_missing(:type, *args)
 		end
 	end
 
