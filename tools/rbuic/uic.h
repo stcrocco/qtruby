@@ -96,6 +96,10 @@ public:
     bool write(DomUI *ui);
 #endif
 
+#ifdef QT_UIC_RUBY_GENERATOR
+    bool rbwrite(DomUI *ui);
+#endif
+
     bool isMainWindow(const QString &className) const;
     bool isToolBar(const QString &className) const;
     bool isStatusBar(const QString &className) const;

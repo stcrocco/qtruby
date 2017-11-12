@@ -28,10 +28,10 @@
 
 #include "driver.h"
 #include "uic.h"
-#include "ui4.h"
+#include "ui5.h"
 
-#include <qfileinfo.h>
-#include <qdebug.h>
+#include <QFileInfo>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -178,6 +178,25 @@ QString Driver::unique(const QString &instanceName, const QString &className)
     return name;
 }
 
+QString Driver::rubyClassName(const QString &name)
+{
+	QString qname = name;
+
+	if (qname.startsWith("Q") && !qname.startsWith("Qt::")) {
+		qname = QString("Qt::") + qname.mid(1);
+	} else if (qname.startsWith("K") && !qname.startsWith("KDE::")) {
+		qname = QString("KDE::") + qname.mid(1);
+	}
+
+	if (!qname.contains("|Qt::")) {
+    	qname.replace("|Q", "|Qt::");
+	} else if (!qname.contains("|KDE::")) {
+    	qname.replace("|K", "|KDE::");
+	}
+
+	return qname;
+}
+
 QString Driver::qtify(const QString &name)
 {
     QString qname = name;
@@ -258,11 +277,11 @@ bool Driver::uic(const QString &fileName, DomUI *ui, QTextStream *out)
 
     Uic tool(this);
     bool rtn = false;
-#ifdef QT_UIC_CPP_GENERATOR
-    rtn = tool.write(ui);
+#ifdef QT_UIC_RUBY_GENERATOR
+    rtn = tool.rbwrite(ui);
 #else
     Q_UNUSED(ui);
-    fprintf(stderr, "uic: option to generate cpp code not compiled in [%s:%d]\n",
+    fprintf(stderr, "uic: option to generate ruby code not compiled in [%s:%d]\n",
             __FILE__, __LINE__);
 #endif
 

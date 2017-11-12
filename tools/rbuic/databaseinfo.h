@@ -30,8 +30,8 @@
 #define DATABASEINFO_H
 
 #include "treewalker.h"
-#include <qstringlist.h>
-#include <qmap.h>
+#include <QtCore/QStringList>
+#include <QMap>
 
 QT_BEGIN_NAMESPACE
 

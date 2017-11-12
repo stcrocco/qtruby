@@ -16,9 +16,10 @@ ENDIF(RUBY_VERSION)
 
 
 list(GET Qt5Core_INCLUDE_DIRS 0 QT5_CORE_INCLUDE_BASE)
-set(QMetaObjectBuilder_INCLUDE "${QT5_CORE_INCLUDE_BASE}/QtCore/${Qt5Core_VERSION}/QtCore")
+set(QtCoreIncludeDirWithVersion "${QT5_CORE_INCLUDE_BASE}/QtCore/${Qt5Core_VERSION}")
+set(QMetaObjectBuilder_INCLUDE "${QtCoreIncludeDirWithVersion}/QtCore")
 
-include_directories( ${SMOKE_INCLUDE_DIR} ${RUBY_INCLUDE_DIRS} ${QMetaObjectBuilder_INCLUDE} )
+include_directories( ${SMOKE_INCLUDE_DIR} ${RUBY_INCLUDE_DIRS} ${QMetaObjectBuilder_INCLUDE} ${QtCoreIncludeDirWithVersion} )
 INCLUDE_DIRECTORIES (${QT_INCLUDES})
 
 set(qtrubyshared_LIB_SRCS 

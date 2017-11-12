@@ -28,7 +28,7 @@
 
 #include "databaseinfo.h"
 #include "driver.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "utils.h"
 
 QT_BEGIN_NAMESPACE

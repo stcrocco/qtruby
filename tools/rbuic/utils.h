@@ -29,7 +29,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "ui4.h"
+#include "ui5.h"
 #include <qstring.h>
 #include <qlist.h>
 #include <qhash.h>
@@ -138,6 +138,13 @@ inline QStringList unique(const QStringList &lst)
     for (int i=0; i<lst.size(); ++i)
         h.insert(lst.at(i), true);
     return h.keys();
+}
+
+inline QString toRubyIdentifier(const QString &id){
+  QString result(id);
+  result = result.mid(0, 1).toLower() + result.mid(1);
+  result.prepend("@");
+  return result;
 }
 
 QT_END_NAMESPACE

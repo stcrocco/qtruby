@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include "uic.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "driver.h"
 #include "option.h"
 #include "treewalker.h"
@@ -41,6 +41,10 @@
 #ifdef QT_UIC_JAVA_GENERATOR
 #include "javawriteincludes.h"
 #include "javawritedeclaration.h"
+#endif
+
+#ifdef QT_UIC_RUBY_GENERATOR
+#include "rbwritedeclaration.h"
 #endif
 
 #include <qxmlstream.h>
@@ -116,6 +120,19 @@ bool Uic::printDependencies()
 void Uic::writeCopyrightHeader(DomUI *ui)
 {
     QString comment = ui->elementComment();
+#ifdef QT_UIC_RUBY_GENERATOR
+    if (comment.size())
+        out << "=begin\n" << comment << "\n=end\n\n";
+
+    out << "=begin\n";
+    out << "** Form generated from reading ui file '" << QFileInfo(opt.inputFile).fileName() << "'\n";
+    out << "**\n";
+    out << "** Created: " << QDateTime::currentDateTime().toString() << "\n";
+    out << "**      " << QString("by: Qt User Interface Compiler version %1\n").arg(QT_VERSION_STR);
+    out << "**\n";
+    out << "** WARNING! All changes made in this file will be lost when recompiling ui file!\n";
+    out << "=end\n\n";
+#else
     if (comment.size())
         out << "/*\n" << comment << "\n*/\n\n";
 
@@ -126,6 +143,7 @@ void Uic::writeCopyrightHeader(DomUI *ui)
     out << "**\n";
     out << "** WARNING! All changes made in this file will be lost when recompiling UI file!\n";
     out << "********************************************************************************/\n\n";
+#endif
 }
 
 // Check the version with a stream reader at the <ui> element.
@@ -215,6 +233,12 @@ bool Uic::write(QIODevice *in)
 #else
         fprintf(stderr, "uic: option to generate java code not compiled in\n");
 #endif
+    } else if (option().generator == Option::RubyGenerator) {
+#ifdef QT_UIC_RUBY_GENERATOR
+        rtn = rbwrite (ui);
+#else
+        fprintf(stderr, "uic: option to generate ruby code not compiled in\n");
+#endif
     } else {
 #ifdef QT_UIC_CPP_GENERATOR
         if (!language.isEmpty() && language.toLower() != QLatin1String("c++")) {
@@ -294,6 +318,75 @@ bool Uic::jwrite(DomUI *ui)
 
     Validator(this).acceptUI(ui);
     WriteDeclaration(this).acceptUI(ui);
+
+    return true;
+}
+#endif
+
+#ifdef QT_UIC_RUBY_GENERATOR
+bool Uic::rbwrite(DomUI *ui)
+{
+    using namespace Ruby;
+
+    if (!ui || !ui->elementWidget())
+        return false;
+
+    if (opt.copyrightHeader)
+        writeCopyrightHeader(ui);
+
+    pixFunction = ui->elementPixmapFunction();
+    if (pixFunction == QLatin1String("Qt::Pixmap::fromMimeSource"))
+        pixFunction = QLatin1String("qPixmapFromMimeSource");
+
+    externalPix = ui->elementImages() == 0;
+
+    info.acceptUI(ui);
+    cWidgetsInfo.acceptUI(ui);
+//    WriteIncludes(this).acceptUI(ui);
+
+    Validator(this).acceptUI(ui);
+    if (option().execCode) {
+    	if (option().useKDE) {
+			out << "require 'korundum5'" << endl << endl;
+		} else {
+			out << "require 'Qt5'" << endl << endl;
+		}
+	}
+
+    WriteDeclaration(this).acceptUI(ui);
+
+    if (option().execCode) {
+		QString qualifiedClassName = ui->elementClass() + option().postfix;
+		QString className = qualifiedClassName.mid(0, 1).toUpper() + qualifiedClassName.mid(1);
+		DomWidget*  parentWidget = ui->elementWidget();
+		QString parentClass = parentWidget->attributeClass();
+
+    	if (option().useKDE) {
+			out << "if $0 == __FILE__" << endl;
+			out << option().indent << "about = KDE::AboutData.new(\"" << className.toLower() << "\", \"" << className << "\", KDE.ki18n(\"\"), \"0.1\")" << endl;
+			out << option().indent << "KDE::CmdLineArgs.init(ARGV, about)" << endl;
+			out << option().indent << "a = KDE::Application.new" << endl;
+			out << option().indent << "u = " << option().prefix << className << ".new" << endl;
+			parentClass.replace(QRegExp("^Q"), "Qt::");
+			parentClass.replace(QRegExp("^K"), "KDE::");
+			out << option().indent << "w = " << parentClass << ".new" << endl;
+			out << option().indent << "u.setupUi(w)" << endl;
+			out << option().indent << "a.topWidget = w" << endl;
+			out << option().indent << "w.show" << endl;
+			out << option().indent << "a.exec" << endl;
+			out << "end" << endl;
+		} else {
+			out << "if $0 == __FILE__" << endl;
+			out << option().indent << "a = Qt::Application.new(ARGV)" << endl;
+			out << option().indent << "u = " << option().prefix << className << ".new" << endl;
+			parentClass.replace(QRegExp("^Q"), "Qt::");
+			out << option().indent << "w = " << parentClass << ".new" << endl;
+			out << option().indent << "u.setupUi(w)" << endl;
+			out << option().indent << "w.show" << endl;
+			out << option().indent << "a.exec" << endl;
+			out << "end" << endl;
+		}
+    }
 
     return true;
 }

@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include "treewalker.h"
-#include "ui4.h"
+#include "ui5.h"
 
 QT_BEGIN_NAMESPACE
 

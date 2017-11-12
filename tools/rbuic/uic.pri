@@ -9,7 +9,7 @@ HEADERS += \
            $$PWD/option.h \
            $$PWD/treewalker.h \
            $$PWD/utils.h \
-           $$PWD/ui4.h \
+           $$PWD/ui5.h \
            $$PWD/validator.h
 
 SOURCES += \

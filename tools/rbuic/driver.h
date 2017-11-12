@@ -73,6 +73,7 @@ public:
     static QString headerFileName(const QString &fileName);
     QString headerFileName() const;
 
+    QString rubyClassName(const QString &name);
     static QString normalizedName(const QString &name);
     static QString qtify(const QString &name);
     QString unique(const QString &instanceName=QString(),

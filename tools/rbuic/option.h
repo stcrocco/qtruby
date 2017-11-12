@@ -39,7 +39,8 @@ struct Option
     enum Generator
     {
         CppGenerator,
-        JavaGenerator
+        JavaGenerator,
+        RubyGenerator
     };
 
     unsigned int headerProtection : 1;
@@ -52,6 +53,9 @@ struct Option
     unsigned int limitXPM_LineLength : 1;
     unsigned int implicitIncludes: 1;
     unsigned int idBased: 1;
+#ifdef QT_UIC_RUBY_GENERATOR
+    unsigned int execCode: 1;
+    unsigned int useKDE: 1;
     Generator generator;
 
     QString inputFile;
@@ -62,6 +66,7 @@ struct Option
     QString postfix;
     QString translateFunction;
     QString includeFile;
+#endif
 #ifdef QT_UIC_JAVA_GENERATOR
     QString javaPackage;
     QString javaOutputDirectory;
@@ -78,7 +83,8 @@ struct Option
           limitXPM_LineLength(0),
           implicitIncludes(1),
           idBased(0),
-          generator(CppGenerator),
+          execCode(0),
+          generator(RubyGenerator),
           prefix(QLatin1String("Ui_"))
     { indent.fill(QLatin1Char(' '), 4); }
 

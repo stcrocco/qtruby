@@ -37,13 +37,14 @@
 #include <qcoreapplication.h>
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
+#include <qhashfunctions.h>
 
 QT_BEGIN_NAMESPACE
 extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
 
 int runUic(int argc, char *argv[])
 {
-    qt_qhash_seed.testAndSetRelaxed(-1, 0); // set the hash seed to 0 if it wasn't set yet
+    qSetGlobalQHashSeed(0);
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationVersion(QString::fromLatin1(QT_VERSION_STR));
@@ -90,11 +91,6 @@ int runUic(int argc, char *argv[])
     includeOption.setValueName(QStringLiteral("include-file"));
     parser.addOption(includeOption);
 
-    QCommandLineOption generatorOption(QStringList() << QStringLiteral("g") << QStringLiteral("generator"));
-    generatorOption.setDescription(QStringLiteral("Select generator."));
-    generatorOption.setValueName(QStringLiteral("java|cpp"));
-    parser.addOption(generatorOption);
-
     QCommandLineOption idBasedOption(QStringLiteral("idbased"));
     idBasedOption.setDescription(QStringLiteral("Use id based function for i18n"));
     parser.addOption(idBasedOption);
@@ -111,7 +107,7 @@ int runUic(int argc, char *argv[])
     driver.option().postfix = parser.value(postfixOption);
     driver.option().translateFunction = parser.value(translateOption);
     driver.option().includeFile = parser.value(includeOption);
-    driver.option().generator = (parser.value(generatorOption).toLower() == QLatin1String("java")) ? Option::JavaGenerator : Option::CppGenerator;
+    driver.option().generator = Option::RubyGenerator;
 
     QString inputFile;
     if (!parser.positionalArguments().isEmpty())

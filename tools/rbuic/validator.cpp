@@ -28,7 +28,7 @@
 
 #include "validator.h"
 #include "driver.h"
-#include "ui4.h"
+#include "ui5.h"
 #include "uic.h"
 
 QT_BEGIN_NAMESPACE
