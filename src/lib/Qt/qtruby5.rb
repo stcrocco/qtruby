@@ -1477,14 +1477,14 @@ module Qt
 				for m in 0...methodCount()
 					if method(m).methodType == Qt::MetaMethod::Signal 
 						res.push "%s %s" % [method(m).typeName == "" ? "void" : method(m).typeName, 
-											method(m).signature]
+											method(m).methodSignature]
 					end
 				end
 			else
 				for m in methodOffset()...methodCount()
 					if method(m).methodType == Qt::MetaMethod::Signal 
 						res.push "%s %s" % [method(m).typeName == "" ? "void" : method(m).typeName, 
-											method(m).signature]
+											method(m).methodSignature]
 					end
 				end
 			end
