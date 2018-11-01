@@ -1,4 +1,4 @@
-require 'Qt'
+require 'Qt5'
 require 'test/unit'
 
 class TestQtRuby < Test::Unit::TestCase

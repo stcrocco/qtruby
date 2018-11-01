@@ -59,6 +59,22 @@ module Qt
 	end
 	
 	class Base
+
+    def self.const_missing name
+      consts = qt_methods(_constants, 0x10, true)
+      if consts.include? name
+        const_get name
+      else super
+      end
+#       if constants.any?{|c| c =~ /^#{name}::/}
+#         constants_to_add = constants.grep
+#         class_eval{const_set name, Class.new(Qt::Base)}
+#         const_get name
+#       else
+#         super
+#       end
+    end
+
 		def self.signals(*signal_list)
 			meta = Qt::Meta[self.name] || Qt::MetaInfo.new(self)
 			meta.add_signals(signal_list, Internal::MethodSignal | Internal::AccessProtected)
