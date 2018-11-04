@@ -73,7 +73,7 @@ inline QString fixString(const QString &str, const QString &indent,
                 break;
             case '\n':
                 flags |= MultiLineString;
-                cursegment += QLatin1String("\\n\"\n\""); break;
+                cursegment += QLatin1String("\\n\"\\\n\""); break;
             default:
                 cursegment += QLatin1Char(cbyte);
             }
@@ -92,9 +92,9 @@ inline QString fixString(const QString &str, const QString &indent,
     QString joinstr = QLatin1String("\"\n");
     joinstr += indent;
     joinstr += indent;
-    joinstr += QLatin1Char('"');
+    joinstr += QLatin1Char('\"');
 
-    QString rc(QLatin1Char('"'));
+    QString rc(QLatin1Char('\"'));
     rc += result.join(joinstr);
     rc += QLatin1Char('"');
 
