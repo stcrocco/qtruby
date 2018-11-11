@@ -1962,11 +1962,11 @@ void WriteInitialization::initializeComboBox(DomWidget *w)
     if (makeStringListCall) {
         QTextStream &o = translatable ? m_refreshOut : m_output;
         if (translatable)
-            o << m_indent << varName << "clear()\n";
-        o << m_indent << varName << "insertItems(0, [";
+            o << m_indent << varName << ".clear()\n";
+            o << m_indent << varName << ".insertItems(0, [\n";
         for (int i = 0; i < list.size(); ++i)
-            o << m_indent << "<<" << list.at(i) << "\n";
-        o << m_indent << "])\n";
+            o << m_indent << list.at(i) << ",\n";
+            o << m_indent << "])\n";
     } else {
         for (int i = 0; i < items.size(); ++i) {
             const DomItem *item = items.at(i);
