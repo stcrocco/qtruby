@@ -74,9 +74,9 @@ class TestQtRuby < Test::Unit::TestCase
     w4 = Qt::LineEdit.new(w2)
     w4.setObjectName("Bob")
 
-    assert w.findChildren(Qt::Widget) == [ w4, w2, w3 ]
+    assert w.findChildren(Qt::Widget) == [w2, w4, w3 ]
     assert w.findChildren(Qt::LineEdit) == [ w4 ]
-    assert w.findChildren(Qt::Widget,"Bob") == [ w4, w2 ]    
+    assert w.findChildren(Qt::Widget,"Bob") == [ w2, w4 ]
     assert w.findChildren(Qt::LineEdit,"Bob") == [ w4 ]    
   end
 
