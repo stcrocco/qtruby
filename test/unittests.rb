@@ -46,6 +46,8 @@ class TestQtRuby < Test::Unit::TestCase
     w3 = Qt::Widget.new(w1)
     w4 = Qt::Widget.new(w2)
 
+    #This is only to avoid a warning about an unused variable
+    assert w4
     assert w1.children == [ w2, w3 ]
   end
 
@@ -125,9 +127,13 @@ class TestQtRuby < Test::Unit::TestCase
     assert v.toInt == 55
     assert v.toUInt == 55
     assert v.toLongLong == 55
-    assert v.toULongLong == 55
+    pend 'unsigned long long not supported by smoke (already in qtruby 4)' do
+      assert v.toULongLong == 55
+    end
     assert Qt::Variant.new(-55).toLongLong == -55
-    assert Qt::Variant.new(-55).toULongLong == 18446744073709551561
+    pend 'unsigned long long not supported by smoke (already in qtruby 4)' do
+      assert Qt::Variant.new(-55).toULongLong == 18446744073709551561
+    end
     assert v.toDouble == 55.0
     assert v.toChar == Qt::Char.new(55)
     assert v.toString == "55"
