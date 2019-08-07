@@ -1,4 +1,4 @@
-
+include(GNUInstallDirs)
 add_subdirectory( lib )
 find_package(Qt5 COMPONENTS Network DBus Widgets PrintSupport REQUIRED)
 
@@ -74,7 +74,7 @@ target_link_libraries(  qtruby5
 set_target_properties(qtruby5 PROPERTIES PREFIX "")
 set_target_properties(qtruby5shared PROPERTIES VERSION 3.0.0 SOVERSION 3)
 
-install(TARGETS qtruby5shared EXPORT QtRuby5Export DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX} )
+install(TARGETS qtruby5shared EXPORT QtRuby5Export LIBRARY DESTINATION ${CMAKE_INSTALL_LIB_DIR} )
 install(TARGETS qtruby5 DESTINATION ${CUSTOM_RUBY_SITE_ARCH_DIR})
 install(EXPORT QtRuby5Export DESTINATION ${CMAKE_INSTALL_PREFIX}/share/qtruby5/cmake NAMESPACE QTRUBY5_ )
 
