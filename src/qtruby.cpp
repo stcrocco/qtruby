@@ -50,7 +50,7 @@
 #include <qtcore_smoke.h>
 #include <qtgui_smoke.h>
 #include <qtwidgets_smoke.h>
-//#include <qtxml_smoke.h>
+#include <qtxml_smoke.h>
 #include <qtsql_smoke.h>
 #include <qtopengl_smoke.h>
 #include <qtnetwork_smoke.h>
@@ -2144,10 +2144,10 @@ getClassList(VALUE /*self*/)
             rb_ary_push(class_list, rb_str_new2(qtwidgets_Smoke->classes[i].className));
     }
 
-//    for (int i = 1; i <= qtxml_Smoke->numClasses; i++) {
-//        if (qtxml_Smoke->classes[i].className && !qtxml_Smoke->classes[i].external)
-//            rb_ary_push(class_list, rb_str_new2(qtxml_Smoke->classes[i].className));
-//    }
+    for (int i = 1; i <= qtxml_Smoke->numClasses; i++) {
+        if (qtxml_Smoke->classes[i].className && !qtxml_Smoke->classes[i].external)
+            rb_ary_push(class_list, rb_str_new2(qtxml_Smoke->classes[i].className));
+    }
 
 //    for (int i = 1; i <= qtsql_Smoke->numClasses; i++) {
 //        if (qtsql_Smoke->classes[i].className && !qtsql_Smoke->classes[i].external)
@@ -2379,7 +2379,7 @@ Init_qtruby5()
     init_qtcore_Smoke();
     init_qtgui_Smoke();
     init_qtwidgets_Smoke();
-//    init_qtxml_Smoke();
+    init_qtxml_Smoke();
 //    init_qtsql_Smoke();
 //    init_qtopengl_Smoke();
     init_qtnetwork_Smoke();
@@ -2391,7 +2391,7 @@ Init_qtruby5()
     INIT_BINDING(qtcore)
     INIT_BINDING(qtgui)
     INIT_BINDING(qtwidgets)
-//    INIT_BINDING(qtxml)
+    INIT_BINDING(qtxml)
 //    INIT_BINDING(qtsql)
 //    INIT_BINDING(qtopengl)
     INIT_BINDING(qtnetwork)
