@@ -2154,10 +2154,10 @@ getClassList(VALUE /*self*/)
             rb_ary_push(class_list, rb_str_new2(qtsql_Smoke->classes[i].className));
     }
 
-//    for (int i = 1; i <= qtopengl_Smoke->numClasses; i++) {
-//        if (qtopengl_Smoke->classes[i].className && !qtopengl_Smoke->classes[i].external)
-//            rb_ary_push(class_list, rb_str_new2(qtopengl_Smoke->classes[i].className));
-//    }
+    for (int i = 1; i <= qtopengl_Smoke->numClasses; i++) {
+        if (qtopengl_Smoke->classes[i].className && !qtopengl_Smoke->classes[i].external)
+            rb_ary_push(class_list, rb_str_new2(qtopengl_Smoke->classes[i].className));
+    }
 
     for (int i = 1; i <= qtnetwork_Smoke->numClasses; i++) {
         if (qtnetwork_Smoke->classes[i].className && !qtnetwork_Smoke->classes[i].external)
@@ -2381,7 +2381,7 @@ Init_qtruby5()
     init_qtwidgets_Smoke();
     init_qtxml_Smoke();
     init_qtsql_Smoke();
-//    init_qtopengl_Smoke();
+    init_qtopengl_Smoke();
     init_qtnetwork_Smoke();
     init_qtsvg_Smoke();
     init_qtdbus_Smoke();
@@ -2393,7 +2393,7 @@ Init_qtruby5()
     INIT_BINDING(qtwidgets)
     INIT_BINDING(qtxml)
     INIT_BINDING(qtsql)
-//    INIT_BINDING(qtopengl)
+    INIT_BINDING(qtopengl)
     INIT_BINDING(qtnetwork)
     INIT_BINDING(qtsvg)
     INIT_BINDING(qtdbus)
