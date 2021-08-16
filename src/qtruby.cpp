@@ -2108,9 +2108,9 @@ isConstMethod(VALUE /*self*/, VALUE idx)
 static VALUE
 isObject(VALUE /*self*/, VALUE obj)
 {
-    void * ptr = 0;
+    void * ptr = nullptr;
     ptr = value_to_ptr(obj);
-    return (ptr > 0 ? Qtrue : Qfalse);
+    return (ptr ? Qtrue : Qfalse);
 }
 
 static VALUE
