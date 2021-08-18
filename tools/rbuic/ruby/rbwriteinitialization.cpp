@@ -529,10 +529,10 @@ void WriteInitialization::acceptUI(DomUI *node)
         const Buddy &b = m_buddies.at(i);
         QString name(b.objName);
         name.replace("@", "");
-        QString buddyName(b.objName);
+        QString buddyName(b.buddy);
         buddyName.replace("@", "");
 
-        if (!m_registeredWidgets.contains(b.objName)) {
+        if (!m_registeredWidgets.contains(name)) {
             fprintf(stderr, "%s: Warning: Buddy assignment: '%s' is not a valid widget.\n",
                     qPrintable(m_option.messagePrefix()),
                     b.objName.toLatin1().data());
