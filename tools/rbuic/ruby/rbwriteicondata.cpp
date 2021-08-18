@@ -122,7 +122,7 @@ void WriteIconData::writeImage(QTextStream &output, const QString &indent,
         int a = 0;
         int column = 0;
         bool inQuote = false;
-        output << indent << indent << indent << img << " = [" << endl;
+        output << indent << indent << indent << img << " = [" << Qt::endl;
         while (baunzip[a] != '\"')
             a++;
         //For ruby we need to ignore the '};\n' at the end of the data.
@@ -142,7 +142,7 @@ void WriteIconData::writeImage(QTextStream &output, const QString &indent,
             }
         }
 
-        output << "]" << endl;
+        output << "]" << Qt::endl;
 
 //TODO: find out whether this needs to be uncommented and fixed
 //        if (! baunzip.trimmed ().endsWith ("};"))

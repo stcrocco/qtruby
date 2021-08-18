@@ -176,8 +176,8 @@ namespace {
         return  true;
     }
 
-    inline void openIfndef(QTextStream &str, const QString &symbol) { if (!symbol.isEmpty()) str << QLatin1String("#ifndef ") << symbol << endl;  }
-    inline void closeIfndef(QTextStream &str, const QString &symbol) { if (!symbol.isEmpty()) str << QLatin1String("#endif // ") << symbol << endl; }
+    inline void openIfndef(QTextStream &str, const QString &symbol) { if (!symbol.isEmpty()) str << QLatin1String("#ifndef ") << symbol << Qt::endl;  }
+    inline void closeIfndef(QTextStream &str, const QString &symbol) { if (!symbol.isEmpty()) str << QLatin1String("#endif // ") << symbol << Qt::endl; }
 
     const char *accessibilityDefineC = "QT_NO_ACCESSIBILITY";
     const char *toolTipDefineC = "QT_NO_TOOLTIP";
@@ -531,7 +531,6 @@ void WriteInitialization::acceptUI(DomUI *node)
         name.replace("@", "");
         QString buddyName(b.objName);
         buddyName.replace("@", "");
-
 
         if (!m_registeredWidgets.contains(b.objName)) {
             fprintf(stderr, "%s: Warning: Buddy assignment: '%s' is not a valid widget.\n",
@@ -1599,7 +1598,7 @@ QString WriteInitialization::writeFontProperties(const DomFont *f)
     }
     if (f->hasElementWeight() && f->elementWeight() > 0) {
         m_output << m_indent << fontName << ".weight = "
-            << f->elementWeight() << endl;
+            << f->elementWeight() << Qt::endl;
     }
     if (f->hasElementStrikeOut()) {
          m_output << m_indent << fontName << ".strikeOut = "
@@ -2541,7 +2540,7 @@ QString WriteInitialization::Item::writeSetupUi(const QString &parent, Item::Emp
     QMultiMap<QString, QString>::ConstIterator it = m_setupUiData.setters.constBegin();
     while (it != m_setupUiData.setters.constEnd()) {
         openIfndef(m_setupUiStream, it.key());
-        m_setupUiStream << m_indent << uniqueName << it.value() << endl;
+        m_setupUiStream << m_indent << uniqueName << it.value() << Qt::endl;
         closeIfndef(m_setupUiStream, it.key());
         ++it;
     }
@@ -2567,7 +2566,7 @@ void WriteInitialization::Item::writeRetranslateUi(const QString &parentPath)
             openIfndef(m_retranslateUiStream, newDirective);
             oldDirective = newDirective;
         }
-        m_retranslateUiStream << m_indent << uniqueName << it.value() << endl;
+        m_retranslateUiStream << m_indent << uniqueName << it.value() << Qt::endl;
         ++it;
     }
     closeIfndef(m_retranslateUiStream, oldDirective);

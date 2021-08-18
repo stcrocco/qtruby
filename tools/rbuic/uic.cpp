@@ -347,9 +347,9 @@ bool Uic::rbwrite(DomUI *ui)
     Validator(this).acceptUI(ui);
     if (option().execCode) {
     	if (option().useKDE) {
-			out << "require 'korundum5'" << endl << endl;
+			out << "require 'korundum5'" << Qt::endl << Qt::endl;
 		} else {
-			out << "require 'Qt5'" << endl << endl;
+			out << "require 'Qt5'" << Qt::endl << Qt::endl;
 		}
 	}
 
@@ -362,29 +362,29 @@ bool Uic::rbwrite(DomUI *ui)
 		QString parentClass = parentWidget->attributeClass();
 
     	if (option().useKDE) {
-			out << "if $0 == __FILE__" << endl;
-			out << option().indent << "about = KDE::AboutData.new(\"" << className.toLower() << "\", \"" << className << "\", KDE.ki18n(\"\"), \"0.1\")" << endl;
-			out << option().indent << "KDE::CmdLineArgs.init(ARGV, about)" << endl;
-			out << option().indent << "a = KDE::Application.new" << endl;
-			out << option().indent << "u = " << option().prefix << className << ".new" << endl;
+			out << "if $0 == __FILE__" << Qt::endl;
+			out << option().indent << "about = KDE::AboutData.new(\"" << className.toLower() << "\", \"" << className << "\", KDE.ki18n(\"\"), \"0.1\")" << Qt::endl;
+			out << option().indent << "KDE::CmdLineArgs.init(ARGV, about)" << Qt::endl;
+			out << option().indent << "a = KDE::Application.new" << Qt::endl;
+			out << option().indent << "u = " << option().prefix << className << ".new" << Qt::endl;
 			parentClass.replace(QRegExp("^Q"), "Qt::");
 			parentClass.replace(QRegExp("^K"), "KDE::");
-			out << option().indent << "w = " << parentClass << ".new" << endl;
-			out << option().indent << "u.setupUi(w)" << endl;
-			out << option().indent << "a.topWidget = w" << endl;
-			out << option().indent << "w.show" << endl;
-			out << option().indent << "a.exec" << endl;
-			out << "end" << endl;
+			out << option().indent << "w = " << parentClass << ".new" << Qt::endl;
+			out << option().indent << "u.setupUi(w)" << Qt::endl;
+			out << option().indent << "a.topWidget = w" << Qt::endl;
+			out << option().indent << "w.show" << Qt::endl;
+			out << option().indent << "a.exec" << Qt::endl;
+			out << "end" << Qt::endl;
 		} else {
-			out << "if $0 == __FILE__" << endl;
-			out << option().indent << "a = Qt::Application.new(ARGV)" << endl;
-			out << option().indent << "u = " << option().prefix << className << ".new" << endl;
+			out << "if $0 == __FILE__" << Qt::endl;
+			out << option().indent << "a = Qt::Application.new(ARGV)" << Qt::endl;
+			out << option().indent << "u = " << option().prefix << className << ".new" << Qt::endl;
 			parentClass.replace(QRegExp("^Q"), "Qt::");
-			out << option().indent << "w = " << parentClass << ".new" << endl;
-			out << option().indent << "u.setupUi(w)" << endl;
-			out << option().indent << "w.show" << endl;
-			out << option().indent << "a.exec" << endl;
-			out << "end" << endl;
+			out << option().indent << "w = " << parentClass << ".new" << Qt::endl;
+			out << option().indent << "u.setupUi(w)" << Qt::endl;
+			out << option().indent << "w.show" << Qt::endl;
+			out << option().indent << "a.exec" << Qt::endl;
+			out << "end" << Qt::endl;
 		}
     }
 
