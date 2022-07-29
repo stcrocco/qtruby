@@ -1810,8 +1810,29 @@ classid2name(VALUE /*self*/, VALUE mi_value)
 static VALUE
 find_pclassid(VALUE /*self*/, VALUE p_value)
 {
-    char *p = StringValuePtr(p_value);
-    Smoke::ModuleIndex *r = classcache.value(QByteArray(p));
+    //From what I understand, p_value is supposed to contain the name of a class,
+    //as returned by Class.name. However, according to documentation, Class.name
+    //returns nil for anonymous classes. In these case, this will fail because it
+    //assumes that p_value contains a string. To avoid the issue, we first check
+    //if p_value is nil. This happens, for example, when using Sequel.
+    //
+    //TODO: this method is called by: Qt::Base.ancestors,
+    //Qt::Internal#do_method_missing and Module#instance_methods (also in the
+    //protected_ and public_ versions), by using Module#qt_methods. I think the
+    //problem comes from this last case: why is the generic
+    //Module#instance_methods monkey-patched? Shouldn't this only apply to Qt
+    //modules and classes? Check this and, after that, find out if it's still
+    //possible that p_value is nil
+
+    //This is the old, broken code
+    // char *p = StringValuePtr(p_value);
+    // Smoke::ModuleIndex *r = classcache.value(QByteArray(p));
+    
+    Smoke::ModuleIndex *r = nullptr;
+    if (p_value != Qnil) {
+        char *p = StringValuePtr(p_value);
+        r = classcache.value(QByteArray(p));
+    }
     if (r != 0) {
         return rb_funcall(moduleindex_class, rb_intern("new"), 2, INT2NUM(smokeList.indexOf(r->smoke)), INT2NUM(r->index));
     } else {
